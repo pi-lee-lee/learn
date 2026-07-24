@@ -19,8 +19,8 @@ sel_option.add_argument('--disable-gpu') #gpu안써
 sel_option.add_argument('--no-sandbox') #보안격리해제
 sel_option.add_argument('--disable-features=EdgeSignin') #마소팝업차단
 
-driver = webdriver.Edge(options=sel_option)
-driver.get("about:blank")
+# driver = webdriver.Edge(options=sel_option)
+driver = webdriver.Firefox()
 result = '' 
 count = 0 
 
@@ -43,7 +43,7 @@ for i in section:
     if title:
         driver.get('https://translate.google.com/?sl=auto&tl=ko&text={}&op=translate'.format(title))
         print('\r 현재 번역진행중 {} % ({}/{})'.format(100/total*count, count, total),end = '') 
-        time.sleep(3)
+        time.sleep(20)
         title2 = driver.execute_script('return document.querySelectorAll(\'textarea\')[1].innerHTML;')
         count += 1
         fd.write(f"{indent}{title2}\n")
