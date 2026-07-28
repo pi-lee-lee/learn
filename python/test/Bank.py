@@ -1,3 +1,10 @@
+class MENU22:
+    def __init__(self, name, func):
+        self.array = {}
+        self.name = name
+        self.func = func
+    pass
+
 
 class Bank(BaseException):
     def __init__(self):
@@ -7,7 +14,7 @@ class Bank(BaseException):
                      '출금': {'arg':['계좌번호','금액'], 'func':self.minus}, 
                      '출력': {'arg':[], 'func':self.print}, 
                      '종료': {'arg':[], 'func':self.exit}}
-        self.dic = {'1':0}
+        self.dic = {}
         self.cmd = None
         self.state = None
 
@@ -37,10 +44,12 @@ class Bank(BaseException):
             return None
         else:
             argv = []
-            count = 0;
-            for i in self.MENU[(list(self.MENU.keys())[self.cmd-1])]['arg']:
-                count += 1
+            count = 0
+                        
+            menukey = list(self.MENU.keys())[self.cmd-1]
+            for i in self.MENU[menukey]['arg']:
                 temp = self.inputNum(i)
+                count += 1
                 if temp :
                     argv.append(temp)
 

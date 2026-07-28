@@ -1,5 +1,5 @@
-from db.ConPool import *
-from Customer import Customer
+from python.db.ConPool import *
+from python.db.Customer import Customer
 
 db_manager = DBmng()
 con = db_manager.get_connection()
