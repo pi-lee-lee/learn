@@ -43,7 +43,7 @@ for i in section:
     if title:
         driver.get('https://translate.google.com/?sl=auto&tl=ko&text={}&op=translate'.format(title))
         print('\r 현재 번역진행중 {} % ({}/{})'.format(100/total*count, count, total),end = '') 
-        time.sleep(20)
+        time.sleep(3)
         title2 = driver.execute_script('return document.querySelectorAll(\'textarea\')[1].innerHTML;')
         count += 1
         fd.write(f"{indent}{title2}\n")

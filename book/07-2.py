@@ -91,7 +91,7 @@ print(f"함수 이름: {greet.__name__}")  # 정상적으로 'greet' 출력
 print(f"독스트링: {greet.__doc__}")    # 정상적으로 '사용자에게...' 출력
 
 
-import my_module
+import book.my_module as my_module
 
 radius = my_module.number_input()
 
