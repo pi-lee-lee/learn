@@ -74,7 +74,17 @@ print(f"3+7 ={3+k**2}")
 
 #문제2 
 
-u = input("밑변의 길이를 입력해주세요 : ")
-h = input("높이의 길이를 입력해주세요 : ")
+# u = input("밑변의 길이를 입력해주세요 : ")
+# h = input("높이의 길이를 입력해주세요 : ")
 
-print("빗변의 길이는 {}".format((float(u)**2 + float(h)**2) ** (1/2)))
+# print("빗변의 길이는 {}".format((float(u)**2 + float(h)**2) ** (1/2)))
+
+import sys
+
+print(sys.version)
+
+from sql_metadata import Parser
+
+query = "SELECT column_name FROM information_schema.COLUMNS WHERE table_schema = DATABASE() AND table_name = {}  ORDER BY ordinal_position;"
+print(Parser(query).tables[0])
+print(query[query.upper().find('FROM') + 4:].lstrip())

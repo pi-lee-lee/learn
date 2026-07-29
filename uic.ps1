@@ -1,0 +1,1 @@
+pyuic5 -x D:\python\learn\python\pyqt\pyqt5\test.ui -o D:\python\learn\python\pyqt\pyqt5\ui_design.py  
