@@ -52,7 +52,7 @@ class DBmng:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self, db_url: str = "mysql+mysqldb://test:1234@localhost:3306/aitest"):
+    def __init__(self, db_url: str = "mysql+mysqldb://test:1234@192.168.0.29:3306/aitest"):
         if hasattr(self, 'initialized'): 
             return
         
@@ -96,7 +96,7 @@ if __name__ == "__main__":
 
         
 
-        query  = f"INSERT INTO Customers (Name, Email, JoinDate, City, Age, Phone) VALUES ('남남남', 'b@a.com', '{ datetime.now().strftime('%Y-%m-%d')}', '영월군', 41, '063-889-1065')"
+        query  = f"INSERT INTO Customers (Name, Email, JoinDate, City, Age, Phone) VALUES ('남남남', 'k@a.com', '{ datetime.now().strftime('%Y-%m-%d')}', '영월군', 41, '063-889-1065')"
 
         #트랜젝션 시작
         db2.execute(text(query))
