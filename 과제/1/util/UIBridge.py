@@ -4,27 +4,27 @@ oldwidget = {}
 
 
 def changeView(widget, ui, delete = True, alone = False):
-
     if delete : 
         for i  in widget.findChildren(QtWidgets.QFrame):
             i.setParent(None)
        
     child = QtWidgets.QFrame(widget)
 
-    child.setGeometry(widget.geometry())
-
+    child.setGeometry(0, 0, widget.width(), widget.height())
+        
     ui.setupUi(child)
 
     if alone : 
         child.setParent(None)
+
+    return child
     
-    child.show()
 
 def appendView(parent, ui, delete=True):
     child = QtWidgets.QFrame(parent)
-    child.setGeometry(parent.geometry())
+    child.setGeometry(0, 0, parent.width(), parent.height())
     ui.setupUi(child)
-    child.show()
+    return child
         
     
 

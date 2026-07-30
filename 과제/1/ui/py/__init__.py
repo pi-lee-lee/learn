@@ -5,7 +5,6 @@ from .main_window import Ui_MainWindow
 from .login import Ui_Login
 from .com_frame import Ui_Office
 from .user_frame import Ui_User
-from .UIBridge import changeView,appendView
 
 
 
@@ -17,7 +16,5 @@ __all__ = [
     'Ui_MainWindow',
     'Ui_Login',
     'Ui_Office',
-    'Ui_User',
-    'changeView',
-    'appendView'
+    'Ui_User'
 ]

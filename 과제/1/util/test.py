@@ -10,7 +10,6 @@ from datetime import date, datetime
 from ConPool import DBmng
 
 class SQLClient:
-
     def select(self, con, query):
         try:
             qparse = Parser(query)
@@ -117,14 +116,15 @@ class Window(QMainWindow):
                 
 
     def run(self):
-        self.ui.textBrowser.hide()
-        self.ui.textBrowser.setText('')
-        query = self.ui.textEdit.toPlainText()
-
-        qparse = Parser(query)
-        type = qparse.query_type.upper()
-
         try:
+            
+            self.ui.textBrowser.hide()
+            self.ui.textBrowser.setText('')
+            query = self.ui.textEdit.toPlainText()
+
+            qparse = Parser(query)
+            type = qparse.query_type.upper()
+
             if self.con == None:
                 con = self.dbpool.get_connection()
             else:
@@ -149,7 +149,8 @@ class Window(QMainWindow):
             self.exp_print(exp)
         finally:
             if self.con == None:
-                con.close()
+                if con:
+                    con.close()
 
     def exp_print(self,exp):
         log = f"{exp}\n오류라인 : {exp.__traceback__.tb_lineno}\n프레임정보:{exp.__traceback__.tb_frame}"

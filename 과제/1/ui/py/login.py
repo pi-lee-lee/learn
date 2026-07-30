@@ -14,14 +14,37 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Login(object):
     def setupUi(self, Login):
         Login.setObjectName("Login")
-        Login.resize(400, 300)
+        Login.resize(300, 400)
+        self.label = QtWidgets.QLabel(Login)
+        self.label.setGeometry(QtCore.QRect(90, 150, 56, 12))
+        self.label.setObjectName("label")
+        self.Button_Login = QtWidgets.QPushButton(Login)
+        self.Button_Login.setGeometry(QtCore.QRect(60, 320, 75, 23))
+        self.Button_Login.setObjectName("Button_Login")
+        self.Button_Exti = QtWidgets.QPushButton(Login)
+        self.Button_Exti.setGeometry(QtCore.QRect(170, 320, 75, 23))
+        self.Button_Exti.setObjectName("Button_Exti")
+        self.label_2 = QtWidgets.QLabel(Login)
+        self.label_2.setGeometry(QtCore.QRect(80, 190, 56, 12))
+        self.label_2.setObjectName("label_2")
+        self.ID = QtWidgets.QLineEdit(Login)
+        self.ID.setGeometry(QtCore.QRect(150, 140, 113, 20))
+        self.ID.setObjectName("ID")
+        self.PASS = QtWidgets.QLineEdit(Login)
+        self.PASS.setGeometry(QtCore.QRect(150, 190, 113, 20))
+        self.PASS.setObjectName("PASS")
 
         self.retranslateUi(Login)
+        self.Button_Exti.clicked.connect(Login.close) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(Login)
 
     def retranslateUi(self, Login):
         _translate = QtCore.QCoreApplication.translate
         Login.setWindowTitle(_translate("Login", "Dialog"))
+        self.label.setText(_translate("Login", "아이디"))
+        self.Button_Login.setText(_translate("Login", "로그인"))
+        self.Button_Exti.setText(_translate("Login", "취소"))
+        self.label_2.setText(_translate("Login", "비밀번호"))
 
 
 if __name__ == "__main__":
