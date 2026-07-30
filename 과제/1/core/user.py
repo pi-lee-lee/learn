@@ -32,6 +32,18 @@ class User(Base):
             con.close()
 
     def sendOrder(self, pk, count):
+        try:
+            con = self.dbm.get_connection()
+            #CURDATE()
+            query = "INSERT INTO OrderList (U_ID, P_ID, COUNT, STATE, ORDER_DATE, COMP_DATE) VALUES ('{}', '{}', {}, 'O', NOW(), NULL);".format('ADMIN',pk,count)
+            result = con.execute(query)
+            if result and result.rowcount == 1:
+                con.commit()
+             
+        except Exception as exp:
+            raise exp
+        finally:
+            con.close()
         print(pk, count)
 
     def getOrderList(self):

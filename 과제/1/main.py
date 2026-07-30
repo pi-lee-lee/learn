@@ -2,6 +2,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
+
 import sys
 from ui.py import *
 from core import *
