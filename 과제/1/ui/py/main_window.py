@@ -31,6 +31,17 @@ class Ui_MainWindow(object):
         self.Info = QtWidgets.QTextBrowser(self.centralwidget)
         self.Info.setGeometry(QtCore.QRect(0, 0, 841, 491))
         self.Info.setObjectName("Info")
+        self.AdminFrame = QtWidgets.QFrame(self.centralwidget)
+        self.AdminFrame.setGeometry(QtCore.QRect(0, 490, 171, 31))
+        self.AdminFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.AdminFrame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.AdminFrame.setObjectName("AdminFrame")
+        self.ComMode = QtWidgets.QPushButton(self.AdminFrame)
+        self.ComMode.setGeometry(QtCore.QRect(10, 5, 75, 23))
+        self.ComMode.setObjectName("ComMode")
+        self.UserMode = QtWidgets.QPushButton(self.AdminFrame)
+        self.UserMode.setGeometry(QtCore.QRect(90, 5, 75, 23))
+        self.UserMode.setObjectName("UserMode")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -41,6 +52,7 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menubar)
 
         self.retranslateUi(MainWindow)
+        self.Exit.clicked.connect(MainWindow.close) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -55,6 +67,8 @@ class Ui_MainWindow(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">이프로그램은 .... 과제입니다. </p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">로그인해야 시작합니다. </p></body></html>"))
+        self.ComMode.setText(_translate("MainWindow", "사업자모드"))
+        self.UserMode.setText(_translate("MainWindow", "사용자모드"))
 
 
 if __name__ == "__main__":

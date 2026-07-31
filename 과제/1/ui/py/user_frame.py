@@ -15,9 +15,9 @@ class Ui_User(object):
     def setupUi(self, User):
         User.setObjectName("User")
         User.resize(841, 491)
-        self.label = QtWidgets.QLabel(User)
-        self.label.setGeometry(QtCore.QRect(0, 0, 56, 12))
-        self.label.setObjectName("label")
+        self.ID = QtWidgets.QLabel(User)
+        self.ID.setGeometry(QtCore.QRect(10, 10, 56, 12))
+        self.ID.setObjectName("ID")
         self.ShowOrder = QtWidgets.QPushButton(User)
         self.ShowOrder.setGeometry(QtCore.QRect(760, 0, 75, 23))
         self.ShowOrder.setObjectName("ShowOrder")
@@ -34,9 +34,23 @@ class Ui_User(object):
         self.Side_Frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.Side_Frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.Side_Frame.setObjectName("Side_Frame")
-        self.ProductView = QtWidgets.QTableView(User)
-        self.ProductView.setGeometry(QtCore.QRect(10, 30, 531, 441))
+        self.frame = QtWidgets.QFrame(User)
+        self.frame.setGeometry(QtCore.QRect(10, 30, 531, 441))
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
+        self.ProductView = QtWidgets.QTableView(self.frame)
+        self.ProductView.setGeometry(QtCore.QRect(0, 0, 531, 441))
         self.ProductView.setObjectName("ProductView")
+        self.CartView = QtWidgets.QTableView(self.frame)
+        self.CartView.setGeometry(QtCore.QRect(0, 0, 531, 441))
+        self.CartView.setObjectName("CartView")
+        self.OrderView = QtWidgets.QTableView(self.frame)
+        self.OrderView.setGeometry(QtCore.QRect(0, 0, 531, 441))
+        self.OrderView.setObjectName("OrderView")
+        self.ShowProduct = QtWidgets.QPushButton(User)
+        self.ShowProduct.setGeometry(QtCore.QRect(600, 0, 75, 23))
+        self.ShowProduct.setObjectName("ShowProduct")
 
         self.retranslateUi(User)
         QtCore.QMetaObject.connectSlotsByName(User)
@@ -44,9 +58,10 @@ class Ui_User(object):
     def retranslateUi(self, User):
         _translate = QtCore.QCoreApplication.translate
         User.setWindowTitle(_translate("User", "Frame"))
-        self.label.setText(_translate("User", "사용자"))
+        self.ID.setText(_translate("User", "사용자"))
         self.ShowOrder.setText(_translate("User", "주문목록"))
         self.ShowCart.setText(_translate("User", "장바구니"))
+        self.ShowProduct.setText(_translate("User", "상품"))
 
 
 if __name__ == "__main__":

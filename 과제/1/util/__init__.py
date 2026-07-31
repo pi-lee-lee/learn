@@ -1,4 +1,4 @@
-from util.UIBridge import changeView,appendView
+from util.UIBridge import changeView,appendView,clearnView
 from util.ConPool import DBmng as DBmng, TCon as TCon
 
 
@@ -7,6 +7,7 @@ from util.ConPool import DBmng as DBmng, TCon as TCon
 __all__ = [
     'changeView',
     'appendView',
+    'clearnView',
     'DBmng',
     'TCon'
 ]

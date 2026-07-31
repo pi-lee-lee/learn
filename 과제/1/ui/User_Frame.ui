@@ -13,11 +13,11 @@
   <property name="windowTitle">
    <string>Frame</string>
   </property>
-  <widget class="QLabel" name="label">
+  <widget class="QLabel" name="ID">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>0</y>
+     <x>10</x>
+     <y>10</y>
      <width>56</width>
      <height>12</height>
     </rect>
@@ -74,7 +74,7 @@
     <enum>QFrame::Raised</enum>
    </property>
   </widget>
-  <widget class="QTableView" name="ProductView">
+  <widget class="QFrame" name="frame">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -82,6 +82,55 @@
      <width>531</width>
      <height>441</height>
     </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QTableView" name="ProductView">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>531</width>
+      <height>441</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QTableView" name="CartView">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>531</width>
+      <height>441</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QTableView" name="OrderView">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>531</width>
+      <height>441</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="ShowProduct">
+   <property name="geometry">
+    <rect>
+     <x>600</x>
+     <y>0</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>상품</string>
    </property>
   </widget>
  </widget>

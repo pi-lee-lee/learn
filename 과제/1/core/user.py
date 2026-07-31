@@ -4,23 +4,70 @@ class User(Base):
     def __init__(self):
         super().__init__();
         self.cart = {}
-        
-    def getCartDict(self):
-        print(self.cart)
-        return self.cart
 
-    def addCart(self, pk, count):
-        self.cart[pk] = count
-        print(pk, count)
+#############################################################################################
+    def getCartList(self):
+        if len(self.cart) > 0:
+            results = self.getProductListInPid(self.cart.keys())
+            for i in range(len(results)):
+                if results[i][1] != self.cart[results[i][0]][0]:
+                    self.cart[results[i][0]][1] = results[i][1]
+                if results[i][2] != self.cart[results[i][0]][1]:
+                    self.cart[results[i][0]][1] = results[i][2]
+
+
+            return [[k, *v] for k, v in self.cart.items()]
+            # cartlist = []
+            # for i in self.cart:
+            #     cartlist.append([i,*self.cart[i]])
+            # return cartlist
+        return None
+    def getCartItemCount(self):
+        return len(self.cart)
+
+    def addCart(self, pk, name, price, count):
+        self.cart[pk] = [name, price, count]
 
     def removeCart(self, pk):
         del self.cart[pk]
         self.cart.remove()
         
 
-    def editCart(self, pk, count):
-        self.cart[pk] += count
-        
+    def editCart(self, pk, count, name = None, price = None):
+        if not name :
+            self.cart[pk][0] = name
+        if not price : 
+            self.cart[pk][1] = price
+        self.cart[pk][2] = count
+
+    def sendCartOrder(self,id):
+        try:
+            con = self.dbm.get_connection()
+            query = "select CONCAT('{}',NOW(3)+0) as key2 from dual;".format(id)
+
+            order_id = con.execute(query).fetchone()[0]
+
+            query = "INSERT INTO OrderList (U_ID, STATE, ORDER_DATE, COMP_DATE, ORDER_ID) VALUES ('{}', 'O', NOW(), NULL, '{}');".format(id,order_id)
+            result = con.execute(query)
+            
+            if not result and result.rowcount != 1:
+                raise Exception('디비오류')
+            for pk in self.cart: 
+                values = self.cart[pk]
+                query = "INSERT INTO OrderItems (ORDER_ID, P_ID, COUNT) VALUES('{}','{}',{})".format(order_id,pk,values[2])
+                con.execute(query)
+                if not result and result.rowcount != 1:
+                    raise Exception('디비오류')
+                    
+
+
+            con.commit()
+            
+        except Exception as exp:
+            raise exp
+        finally:
+            con.close()
+#############################################################################################
 
     def getProductList(self) :
         try:
@@ -31,15 +78,34 @@ class User(Base):
         finally:
             con.close()
 
-    def sendOrder(self, pk, count):
+    def getProductListInPid(self,pid) :
         try:
             con = self.dbm.get_connection()
-            #CURDATE()
-            query = "INSERT INTO OrderList (U_ID, P_ID, COUNT, STATE, ORDER_DATE, COMP_DATE) VALUES ('{}', '{}', {}, 'O', NOW(), NULL);".format('ADMIN',pk,count)
+            instr = ','.join([f"'{i}'" for i in pid])
+            query = f"select PID, NAME, PRICE from Product where PID in ({instr})"            
+            return con.execute(query).fetchall()
+        except Exception as exp:
+            raise exp
+        finally:
+            con.close()
+
+
+#############################################################################################
+    def sendOrder(self,id, pk, count):
+        try:
+            con = self.dbm.get_connection()
+            query = "select CONCAT('{}',NOW(3)+0) as key2 from dual;".format(id)
+
+            order_id = con.execute(query).fetchone()[0]
+
+            query = "INSERT INTO OrderList (U_ID, STATE, ORDER_DATE, COMP_DATE, ORDER_ID) VALUES ('{}', 'O', NOW(), NULL, '{}');".format(id,order_id)
             result = con.execute(query)
-            if result and result.rowcount == 1:
-                con.commit()
-             
+            if result and result.rowcount == 1:        
+                query = "INSERT INTO OrderItems (ORDER_ID, P_ID, COUNT) VALUES('{}','{}',{})".format(order_id,pk,count)
+                results = con.execute(query)
+                if result and result.rowcount == 1:
+                    con.commit()
+            
         except Exception as exp:
             raise exp
         finally:
