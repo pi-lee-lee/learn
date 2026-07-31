@@ -11,7 +11,7 @@ class User(Base):
             results = self.getProductListInPid(self.cart.keys())
             for i in range(len(results)):
                 if results[i][1] != self.cart[results[i][0]][0]:
-                    self.cart[results[i][0]][1] = results[i][1]
+                    self.cart[results[i][0]][0] = results[i][1]
                 if results[i][2] != self.cart[results[i][0]][1]:
                     self.cart[results[i][0]][1] = results[i][2]
 
@@ -30,13 +30,17 @@ class User(Base):
 
     def removeCart(self, pk):
         del self.cart[pk]
-        self.cart.remove()
-        
+
+    def getcartsum(self):
+        sum = 0
+        for j in self.cart:
+            sum += int(self.cart[j][1]) * int(self.cart[j][2])
+        return sum
 
     def editCart(self, pk, count, name = None, price = None):
-        if not name :
+        if name :
             self.cart[pk][0] = name
-        if not price : 
+        if price : 
             self.cart[pk][1] = price
         self.cart[pk][2] = count
 
@@ -58,9 +62,6 @@ class User(Base):
                 con.execute(query)
                 if not result and result.rowcount != 1:
                     raise Exception('디비오류')
-                    
-
-
             con.commit()
             
         except Exception as exp:
