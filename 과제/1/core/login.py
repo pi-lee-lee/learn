@@ -27,7 +27,7 @@ class Login(Base):
 
         con = self.dbm.get_connection()
         try:
-            query = """select c.CODE, c.UPPER_CODE 
+            query = """select c.CODE, (select CODE from CODE where CODEID = c.UPPER_CODE_ID) as UPPER_CODE 
 			from User u , CODE c  
            	where u.ID = '{}' and u.PASS = '{}' and u.CODEID  = c.CODEID ;
             """.format(id, password)

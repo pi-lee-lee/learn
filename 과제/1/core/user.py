@@ -17,10 +17,7 @@ class User(Base):
 
 
             return [[k, *v] for k, v in self.cart.items()]
-            # cartlist = []
-            # for i in self.cart:
-            #     cartlist.append([i,*self.cart[i]])
-            # return cartlist
+
         return None
     def getCartItemCount(self):
         return len(self.cart)
@@ -125,11 +122,12 @@ class User(Base):
     def sendOrderCancel(self, order_id):
         try:
             con = self.dbm.get_connection()
-            query = "UPDATE OrderList SET STATE = 'OS008' WHERE ORDER_ID = '{}'".format(order_id)
+            query = "UPDATE OrderList SET STATE = 'OS008' WHERE ORDER_ID = '{}';".format(order_id)
             result = con.execute(query)
             if result and result.rowcount == 1:
                 con.commit()
         except Exception as exp:
+            print(exp)
             raise exp
         finally:
             con.close()
@@ -137,10 +135,10 @@ class User(Base):
     def sendOrderMultipleCancel(self, order_ids):
         try:
             con = self.dbm.get_connection()
-            instr = ','.join([f"'{i}'" for i in order_ids])
-            query = f"UPDATE OrderList SET STATE = 'OS008' WHERE ORDER_ID in ({instr})"
+            instr = ','.join([f"'{i}'" for i in order_ids]) # , 뒤에 텍스트 조립 그리고 for 문으로 '오다아이디' 형식으로 리턴함 결론 '오다아이디', '오다아이디', '오다아이디' 
+            query = f"UPDATE OrderList SET STATE = 'OS008' WHERE ORDER_ID in ({instr}) and IFNULL(STATE,'') != 'OS008' and IFNULL(STATE,'') not in  (select CODEID from CODE where UPPER_CODE_ID = 'OS003' );"
             result = con.execute(query)
-            if result and result.rowcount == len(order_ids):
+            if result and result.rowcount > 0:
                 con.commit()
         except Exception as exp:
             raise exp
@@ -150,12 +148,13 @@ class User(Base):
     def getOrderList(self, id):
         try:
             con = self.dbm.get_connection()
-            query = """ select o.ORDER_ID, o.ORDER_NAME,
-                               NVL(c.CODE_NAME, '미접수') as STATE,
-                               o.ORDER_DATE,
-                               COALESCE(DATE(o.COMP_DATE), '') as COMP_DATE
+            query = """ select o.ORDER_ID,
+                            o.ORDER_NAME,
+                            COALESCE(c.CODE_NAME, '미접수') as STATE,
+                            o.ORDER_DATE,
+                            COALESCE(DATE(o.COMP_DATE), '') as COMP_DATE
                         from OrderList o
-                        left join CODE c on o.STATE = c.CODE and c.UPPER_CODE = 'ORD_STATE'
+                        left join CODE c on o.STATE = c.CODEID
                         where o.U_ID = '{}'
                         order by o.ORDER_DATE desc ;
                     """.format(id)

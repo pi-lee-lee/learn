@@ -35,7 +35,10 @@ class UserInterface:
         model =  QStandardItemModel(len(items), len(labels))
         model.setHorizontalHeaderLabels(labels)
         self.tableview:QTableView = tableview
-        self.tableview.setSelectionBehavior(QAbstractItemView.SelectRows)
+
+        self.tableview.setEditTriggers(QAbstractItemView.NoEditTriggers)   #편집불가
+        self.tableview.setSelectionBehavior(QAbstractItemView.SelectRows)  #한줄선택
+
         hidden_key = None;
         for i in range(len(items)):
             for j in range(len(items[i])) :
@@ -85,30 +88,35 @@ class UserInterface:
         self.product_model = self.set_table(self.ui.ProductView, ['상품명','가격','설명'], self.ucore.getProductList(), self.pruduct_item_click, True, 0, 1, f_select = self.pruduct_item_selected)
     def set_product_side(self, pk, name, price, des = None, mselected = False):
         pk = str(pk)
-        uo = Ui_OrderSide()
-        changeView(self.ui.Side_Frame, uo).show()
+        self.uo = Ui_OrderSide()
+        changeView(self.ui.Side_Frame, self.uo).show()
         if mselected :
-            uo.ProductName.hide()
-            uo.Price.hide()
-            uo.CountBox.hide()
-            uo.Sum_Price.hide()
-            uo.Order.hide()
-            uo.Cart.clicked.connect(lambda: self.cart_click(None, None))
+            self.uo.ProductName.hide()
+            self.uo.Price.hide()
+            self.uo.CountBox.hide()
+            self.uo.Sum_Price.hide()
+            self.uo.Order.hide()
+            self.uo.Cart.clicked.connect(lambda: self.product_cart_click(None, None))
         else:
-            uo.ProductName.setText(name)
-            uo.Price.setText(price)
-            uo.CountBox.valueChanged.connect(lambda value : uo.Sum_Price.setText(f'{int(price)*value}'))
-            uo.Sum_Price.setText(f'{price}')
-            wc = uo.CountBox
+            self.uo.ProductName.setText(name)
+            self.uo.Price.setText(price)
+            self.uo.CountBox.valueChanged.connect(lambda value : self.uo.Sum_Price.setText(f'{int(price)*value}'))
+            self.uo.Sum_Price.setText(f'{price}')
+            wc = self.uo.CountBox
             wc.setValue(1)
-            uo.Order.clicked.connect(lambda: self.product_order_click(pk, wc.value(), name))
-            uo.Cart.clicked.connect(lambda: self.cart_click(pk, wc.value()))
+            self.uo.Order.clicked.connect(lambda: self.product_order_click(pk, wc.value(), name))
+            self.uo.Cart.clicked.connect(lambda: self.product_cart_click(pk, wc.value()))
         
 
     def product_order_click(self, pk, count, name):
         self.ucore.sendOrder(self.id,pk,count,name)    
+        self.selectedProductItem = None
+        self.uo.CountBox.blockSignals(True)
+        self.uo.CountBox.setValue(0)
+        self.uo.CountBox.blockSignals(False)
+        self.uo.Sum_Price.setText('0')
 
-    def cart_click(self, pk, count):
+    def product_cart_click(self, pk, count):
         for i in self.ui.ProductView.selectedIndexes():
             pk = self.product_model.item(i.row(),0).data(Qt.ItemDataRole.UserRole)
             price = self.product_model.item(i.row(),1).text()
@@ -229,7 +237,6 @@ class UserInterface:
 
 ##################################################################################
 
-        
     def show_orderlist_view(self):
         self.ui.ProductView.hide()
         self.ui.CartView.hide()
@@ -256,18 +263,19 @@ class UserInterface:
     def orderlist_item_click(self, index:QModelIndex):
         if self.orderlist_selected_count() > 1:
             self.selectedOrderItem = None
-            self.set_orderlist_side(None, True)
+            self.set_orderlist_side(None, None, True)
         else:
             self.selectedOrderItem = index.row()
             order_id = self.orderlist_model.item(index.row(), 0).data(Qt.ItemDataRole.UserRole)
-            self.set_orderlist_side(order_id)              
+            state = self.orderlist_model.item(index.row(), 1).text()
+            self.set_orderlist_side(order_id, state)              
 
     def orderlist_item_selected(self, sel, dsel):
         if self.orderlist_selected_count() > 1:
             self.selectedOrderItem = None
-            self.set_orderlist_side(None, True)
+            self.set_orderlist_side(None, None, True)
 
-    def set_orderlist_side(self, order_id, mselected = False):     
+    def set_orderlist_side(self, order_id, state, mselected = False):     
         self.ol = Ui_OrderListSide()
         changeView(self.ui.Side_Frame, self.ol).show()
 
@@ -283,6 +291,14 @@ class UserInterface:
         else:
             self.ol.label_3.setText(str(order_id))
             self.set_table_order_items(order_id)            
+
+        
+        if state == '주문 취소':
+            self.ol.order_cancle.setEnabled(False)
+            self.ol.order_cancle.setText('취소됨')
+        else:
+            self.ol.order_cancle.setEnabled(True)
+            self.ol.order_cancle.setText('주문 취소')
 
         self.ol.order_cancle.clicked.connect(lambda: self.order_cancel_click())
 
@@ -318,8 +334,10 @@ class UserInterface:
         else:
             return
 
-        for r in rows:                                    
+        for r in rows:
             self.orderlist_model.item(r, 1).setText('주문 취소')
 
         self.selectedOrderItem = None
-        clearnView(self.ui.Side_Frame)
+        self.ol.order_cancle.setEnabled(False)        # 사이드는 유지, 버튼만 비활성화
+        self.ol.order_cancle.setText('취소됨')
+       

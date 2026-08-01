@@ -61,15 +61,13 @@ class MainInterface:
             self.id = id
             self.ui.AdminFrame.show()
 
-        if upper_code != 'AUTH':
-            return
-        elif code == 'AUTH_PARTNER':
+        if upper_code == 'AUTH_PARTNER':
             self.id = id
-        elif code == 'AUTH_USER':
+
+        if upper_code == 'AUTH_USER':
             self.id = id
             self.run_user_mode()
-        else:
-            return
+
         self.ui.Login.setText('로그아웃')
 
     def run_user_mode(self):

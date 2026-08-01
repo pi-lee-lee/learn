@@ -17,8 +17,8 @@ def appendView(parent, ui):
     ui.setupUi(child)
     return child
 
-def clearnView(parent, target = QtWidgets.QWidget):
-    for i in parent.findChildren(target):
+def clearnView(parent):
+    for i in parent.findChildren(type(parent)):
         i.setParent(None)
 
         
