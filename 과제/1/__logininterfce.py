@@ -30,6 +30,6 @@ class LoginInterface:
         if not result:
             self.ui.INFO.setText('로그인실패 아직 준비가 안됐다.')
         else:
-            self.callback(self.ui.ID.text(), result)
+            self.callback(self.ui.ID.text(), result[0], result[1])
             self.dialog.close()
             

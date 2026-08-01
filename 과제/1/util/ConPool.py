@@ -52,7 +52,7 @@ class DBmng:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self, db_url: str = "mysql+mysqldb://test:1234@192.168.0.29:3306/aitest"):
+    def __init__(self, db_url: str = "mysql+mysqldb://test:1234@127.0.0.1:3306/aitest"):
         if hasattr(self, 'initialized'): 
             return
         

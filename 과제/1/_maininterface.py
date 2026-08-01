@@ -19,9 +19,15 @@ class MainInterface:
         self.init_connect()
 
     def main_run(self) -> QApplication:
-        self.MainWindow.show()
+        try:
+            self.MainWindow.show()
+            sys.exit(self.app.exec_())
+        except Exception as e:
+            print(e)
+            print(e.__traceback__.tb_lineno)
+            print(e.__traceback__.tb_frame.f_code.co_filename)
+        
 
-        sys.exit(self.app.exec_())
 
     def init_connect(self):
         self.ui.Login.clicked.connect(self.click_login)
@@ -43,14 +49,14 @@ class MainInterface:
         li = LoginInterface(self.MainWindow)
         li.show_login(self.callback_login)
 
-    def callback_login(self, id, code):
+    def callback_login(self, id, code, upper_code):
         self.id = id
-        if code == 'A':
+        if code == 'AA001':
             print("관리자모드")
             self.ui.AdminFrame.show()
-        elif code == 'C':
+        elif upper_code == 'AU002':
             print('사업자모드')
-        elif code == 'U':
+        elif upper_code == 'AU003':
             self.run_user_mode()
             print('사용자모드')
 

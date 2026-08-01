@@ -28,6 +28,9 @@ class User(Base):
     def addCart(self, pk, name, price, count):
         self.cart[pk] = [name, price, count]
 
+    def reset(self):
+        self.cart = {}  
+        
     def removeCart(self, pk):
         del self.cart[pk]
 
@@ -114,6 +117,15 @@ class User(Base):
         print(pk, count)
 
     def getOrderList(self):
-        pass
+        try:
+            con = self.dbm.get_connection()
+            query = "select CONCAT('{}',NOW(3)+0) as key2 from dual;".format(id)
+
+        
+        except Exception as exp:
+            raise exp
+        finally:
+            con.close()
+    
 
 

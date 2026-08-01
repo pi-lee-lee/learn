@@ -16,9 +16,9 @@ class Login(Base):
             return False
 
         con = self.dbm.get_connection()
-        result = con.execute("select CODE from User where ID = '{}' and PASS = {}".format(id,password)).fetchone()
+        result = con.execute("select u.CODEID, c.UPPER_CODE from User u, CODE c where u.ID = '{}' and u.PASS = {} and u.CODEID = c.CODEID".format(id,password)).fetchone()
         if result:
-            receiveCode = result[0]
-            return receiveCode
+            print(result)
+            return result
 
         return None

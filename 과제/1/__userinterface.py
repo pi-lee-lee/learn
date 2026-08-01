@@ -28,6 +28,7 @@ class UserInterface:
         f.show()
 
 
+
     def set_table(self, tableview, labels, items, f_click ,hidden = False, hitem = 0, hpos = 1 ,single = False , f_select = None):
         if not items or len(items) < 1 :
             return
@@ -108,30 +109,29 @@ class UserInterface:
         self.ucore.sendOrder(self.id,pk,count)    
 
     def cart_click(self, pk, count):
-        for i in self.tableview.selectedIndexes():
+        for i in self.ui.ProductView.selectedIndexes():
             pk = self.product_model.item(i.row(),0).data(Qt.ItemDataRole.UserRole)
             price = self.product_model.item(i.row(),1).text()
             name = self.product_model.item(i.row(),0).text()
-            if len(self.tableview.selectedIndexes()) > 1 :
+            if len(self.ui.ProductView.selectedIndexes()) > 1 :
                 self.ucore.addCart(pk,name, price, 1)
             else :
                 self.ucore.addCart(pk,name, price, count)
            
     def pruduct_item_click(self, index:QModelIndex):
-        ppk = index.model().item(index.row(),0).data(Qt.ItemDataRole.UserRole)
-        pname = index.model().item(index.row(),0).text()
-        price = index.model().item(index.row(),1).text()
-        des = index.model().item(index.row(),2).text()        
-        self.set_order_side(ppk, pname, price, des)
-        self.selectedProductItem = index.row()
+        if len(self.ui.ProductView.selectedIndexes())//3 > 1 :
+            self.set_order_side(None, None, None, None, True)
+        else:
+            ppk = index.model().item(index.row(),0).data(Qt.ItemDataRole.UserRole)
+            pname = index.model().item(index.row(),0).text()
+            price = index.model().item(index.row(),1).text()
+            des = index.model().item(index.row(),2).text()        
+            self.set_order_side(ppk, pname, price, des)
+            self.selectedProductItem = index.row()
 
     def pruduct_item_selected(self, sel, dsel):
-        index = self.tableview.selectedIndexes()
-        if len(index) > 1 : 
+        if len(self.ui.ProductView.selectedIndexes())//3 > 1 : 
             self.set_order_side(None, None, None, None, True)
-
-        indexes = self.tableview.selectedIndexes()
-
 
 
     def show_product_view(self):
@@ -156,6 +156,7 @@ class UserInterface:
     def set_cart_side(self):
         self.uc = Ui_CartSide()
         changeView(self.ui.Side_Frame, self.uc).show()
+
         self.cart_model = self.set_table(self.uc.CartView, ['품명', '가격', '수량'], self.ucore.getCartList(), self.cart_item_click, True, 0, 1)
         self.uc.itemcount.setText(str(self.ucore.getCartItemCount()))
         self.uc.delete_item.clicked.connect(lambda: self.cart_item_delete_click())
@@ -164,17 +165,40 @@ class UserInterface:
         self.uc.cart_sum.setText(str(self.ucore.getcartsum()))
         
     def cart_item_click(self, index:QModelIndex):
-        self.selectedCartItem = index.row()
-        count = int(self.cart_model.item(index.row(),2).text())
-        self.uc.selected_item_count.setValue(count)
+        if len(self.ui.CartView.selectedIndexes())//3 > 1 :
+            self.selectedCartItem = None
+            self.uc.selected_item_count.setValue(0)
+        else:
+            self.selectedCartItem = index.row()
+            count = int(self.cart_model.item(index.row(),2).text())
+            self.uc.selected_item_count.setValue(count)
 
         
     def cart_item_delete_click(self):
-        pk = self.cart_model.item(self.selectedCartItem,0).data(Qt.ItemDataRole.UserRole)
-        self.ucore.removeCart(pk)
-        self.cart_model.removeRow(self.selectedCartItem)
-        self.uc.itemcount.setText(str(self.ucore.getCartItemCount()))
-        self.uc.cart_sum.setText(str(self.ucore.getcartsum()))
+         if len(self.uc.CartView.selectedIndexes())//3 > 1 :
+            pk = []
+            row = []
+            for i in self.uc.CartView.selectedIndexes():
+                pk.append(self.cart_model.item(i.row(),0).data(Qt.ItemDataRole.UserRole))
+                row.append(i.row())
+
+            pk = list(set(pk))
+            for i in pk:
+                self.ucore.removeCart(i)
+
+            row = list(set(row))
+            row.sort(reverse=True)
+            for i in row:
+                self.cart_model.removeRow(i)
+                        
+            self.uc.itemcount.setText(str(self.ucore.getCartItemCount()))
+            self.uc.cart_sum.setText(str(self.ucore.getcartsum()))
+         else:
+            pk = self.cart_model.item(self.selectedCartItem,0).data(Qt.ItemDataRole.UserRole)
+            self.ucore.removeCart(pk)
+            self.cart_model.removeRow(self.selectedCartItem)
+            self.uc.itemcount.setText(str(self.ucore.getCartItemCount()))
+            self.uc.cart_sum.setText(str(self.ucore.getcartsum()))
 
     def cart_item_count_change(self,value):
         pk = self.cart_model.item(self.selectedCartItem,0).data(Qt.ItemDataRole.UserRole)
@@ -184,8 +208,11 @@ class UserInterface:
 
     def cart_order(self):
         self.ucore.sendCartOrder(self.id)
-        
-
+        self.ucore.reset()
+        self.cart_model.clear()        
+        self.uc.itemcount.setText('0')
+        self.uc.selected_item_count.setValue(0)
+        self.uc.cart_sum.setText('0')
 
 ##################################################################################
 
@@ -193,8 +220,6 @@ class UserInterface:
         self.ui.ProductView.hide()
         self.ui.CartView.hide()
         self.ui.OrderView.show()
-
-
         clearnView(self.ui.Side_Frame)
         
 
