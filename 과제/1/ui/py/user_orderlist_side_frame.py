@@ -15,9 +15,9 @@ class Ui_OrderListSide(object):
     def setupUi(self, OrderListSide):
         OrderListSide.setObjectName("OrderListSide")
         OrderListSide.resize(282, 441)
-        self.pushButton_4 = QtWidgets.QPushButton(OrderListSide)
-        self.pushButton_4.setGeometry(QtCore.QRect(180, 400, 75, 23))
-        self.pushButton_4.setObjectName("pushButton_4")
+        self.order_cancle = QtWidgets.QPushButton(OrderListSide)
+        self.order_cancle.setGeometry(QtCore.QRect(180, 400, 75, 23))
+        self.order_cancle.setObjectName("order_cancle")
         self.gridLayoutWidget = QtWidgets.QWidget(OrderListSide)
         self.gridLayoutWidget.setGeometry(QtCore.QRect(10, 20, 261, 312))
         self.gridLayoutWidget.setObjectName("gridLayoutWidget")
@@ -29,9 +29,6 @@ class Ui_OrderListSide(object):
         self.label_7.setText("")
         self.label_7.setObjectName("label_7")
         self.gridLayout.addWidget(self.label_7, 0, 3, 1, 1)
-        self.listView = QtWidgets.QListView(self.gridLayoutWidget)
-        self.listView.setObjectName("listView")
-        self.gridLayout.addWidget(self.listView, 1, 0, 1, 4)
         self.label_8 = QtWidgets.QLabel(self.gridLayoutWidget)
         self.label_8.setObjectName("label_8")
         self.gridLayout.addWidget(self.label_8, 0, 1, 1, 1)
@@ -59,6 +56,9 @@ class Ui_OrderListSide(object):
         self.gridLayout.addWidget(self.label_11, 3, 1, 1, 1)
         spacerItem = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout.addItem(spacerItem, 2, 3, 1, 1)
+        self.order_items = QtWidgets.QTableView(self.gridLayoutWidget)
+        self.order_items.setObjectName("order_items")
+        self.gridLayout.addWidget(self.order_items, 1, 0, 1, 4)
         self.gridLayout.setColumnStretch(2, 1)
         self.gridLayout.setRowStretch(1, 1)
 
@@ -68,7 +68,7 @@ class Ui_OrderListSide(object):
     def retranslateUi(self, OrderListSide):
         _translate = QtCore.QCoreApplication.translate
         OrderListSide.setWindowTitle(_translate("OrderListSide", "Frame"))
-        self.pushButton_4.setText(_translate("OrderListSide", "주문취소"))
+        self.order_cancle.setText(_translate("OrderListSide", "주문취소"))
         self.label_8.setText(_translate("OrderListSide", ":"))
         self.label_3.setText(_translate("OrderListSide", "123123123123123"))
         self.label_13.setText(_translate("OrderListSide", "2000"))

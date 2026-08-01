@@ -54,16 +54,22 @@ class User(Base):
 
             order_id = con.execute(query).fetchone()[0]
 
-            query = "INSERT INTO OrderList (U_ID, STATE, ORDER_DATE, COMP_DATE, ORDER_ID) VALUES ('{}', 'O', NOW(), NULL, '{}');".format(id,order_id)
+            order_name = ""
+            if len(self.cart) > 1:
+                order_name = self.cart[list(self.cart.keys())[0]][0] + " 외 " + str(len(self.cart) - 1) + "건"
+            else:
+                order_name = self.cart[list(self.cart.keys())[0]][0]
+
+            query = "INSERT INTO OrderList (U_ID, STATE, ORDER_DATE, COMP_DATE, ORDER_ID, ORDER_NAME) VALUES ('{}', NULL, NOW(), NULL, '{}', '{}');".format(id,order_id, order_name)
             result = con.execute(query)
             
-            if not result and result.rowcount != 1:
+            if not result or result.rowcount != 1:
                 raise Exception('디비오류')
             for pk in self.cart: 
                 values = self.cart[pk]
                 query = "INSERT INTO OrderItems (ORDER_ID, P_ID, COUNT) VALUES('{}','{}',{})".format(order_id,pk,values[2])
-                con.execute(query)
-                if not result and result.rowcount != 1:
+                result = con.execute(query)
+                if not result or result.rowcount != 1:
                     raise Exception('디비오류')
             con.commit()
             
@@ -95,18 +101,18 @@ class User(Base):
 
 
 #############################################################################################
-    def sendOrder(self,id, pk, count):
+    def sendOrder(self,id, pk, count, name):
         try:
             con = self.dbm.get_connection()
             query = "select CONCAT('{}',NOW(3)+0) as key2 from dual;".format(id)
 
             order_id = con.execute(query).fetchone()[0]
-
-            query = "INSERT INTO OrderList (U_ID, STATE, ORDER_DATE, COMP_DATE, ORDER_ID) VALUES ('{}', 'O', NOW(), NULL, '{}');".format(id,order_id)
+            
+            query = "INSERT INTO OrderList (U_ID, STATE, ORDER_DATE, COMP_DATE, ORDER_ID, ORDER_NAME) VALUES ('{}', NULL, NOW(), NULL, '{}', '{}');".format(id,order_id, name)
             result = con.execute(query)
             if result and result.rowcount == 1:        
                 query = "INSERT INTO OrderItems (ORDER_ID, P_ID, COUNT) VALUES('{}','{}',{})".format(order_id,pk,count)
-                results = con.execute(query)
+                result = con.execute(query)
                 if result and result.rowcount == 1:
                     con.commit()
             
@@ -116,16 +122,64 @@ class User(Base):
             con.close()
         print(pk, count)
 
-    def getOrderList(self):
+    def sendOrderCancel(self, order_id):
         try:
             con = self.dbm.get_connection()
-            query = "select CONCAT('{}',NOW(3)+0) as key2 from dual;".format(id)
-
-        
+            query = "UPDATE OrderList SET STATE = 'OS008' WHERE ORDER_ID = '{}'".format(order_id)
+            result = con.execute(query)
+            if result and result.rowcount == 1:
+                con.commit()
         except Exception as exp:
             raise exp
         finally:
             con.close()
+
+    def sendOrderMultipleCancel(self, order_ids):
+        try:
+            con = self.dbm.get_connection()
+            instr = ','.join([f"'{i}'" for i in order_ids])
+            query = f"UPDATE OrderList SET STATE = 'OS008' WHERE ORDER_ID in ({instr})"
+            result = con.execute(query)
+            if result and result.rowcount == len(order_ids):
+                con.commit()
+        except Exception as exp:
+            raise exp
+        finally:
+            con.close()
+
+    def getOrderList(self, id):
+        try:
+            con = self.dbm.get_connection()
+            query = """ select o.ORDER_ID, o.ORDER_NAME,
+                               NVL(c.CODE_NAME, '미접수') as STATE,
+                               o.ORDER_DATE,
+                               COALESCE(DATE(o.COMP_DATE), '') as COMP_DATE
+                        from OrderList o
+                        left join CODE c on o.STATE = c.CODE and c.UPPER_CODE = 'ORD_STATE'
+                        where o.U_ID = '{}'
+                        order by o.ORDER_DATE desc ;
+                    """.format(id)
+            return con.execute(query).fetchall()
+        except Exception as exp:
+            raise exp
+        finally:
+            con.close()
+
+
+    def getOrderItems(self, order_id):
+        try:
+            con = self.dbm.get_connection()
+            query = """ select oi.P_ID, p.NAME, p.PRICE, oi.COUNT, oi.COUNT * p.PRICE as total
+                        from OrderItems oi, Product p
+                        where oi.P_ID = p.PID and oi.ORDER_ID = '{}'
+                        order by p.NAME ;
+                    """.format(order_id)
+            return con.execute(query).fetchall()
+        except Exception as exp:
+            raise exp
+        finally:
+            con.close()
+
     
 
 

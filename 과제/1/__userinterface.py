@@ -76,14 +76,14 @@ class UserInterface:
         if f_select:
             self.tableview.selectionModel().selectionChanged.connect(lambda sel, dsel: f_select(sel, dsel))
         if single :
-            self.tableView.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+            self.tableview.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
 
         return model
 
 #############################################################################
     def set_table_product_list(self):
         self.product_model = self.set_table(self.ui.ProductView, ['상품명','가격','설명'], self.ucore.getProductList(), self.pruduct_item_click, True, 0, 1, f_select = self.pruduct_item_selected)
-    def set_order_side(self, pk, name, price, des = None, mselected = False):
+    def set_product_side(self, pk, name, price, des = None, mselected = False):
         pk = str(pk)
         uo = Ui_OrderSide()
         changeView(self.ui.Side_Frame, uo).show()
@@ -101,37 +101,37 @@ class UserInterface:
             uo.Sum_Price.setText(f'{price}')
             wc = uo.CountBox
             wc.setValue(1)
-            uo.Order.clicked.connect(lambda: self.order_click(pk, wc.value()))
+            uo.Order.clicked.connect(lambda: self.product_order_click(pk, wc.value(), name))
             uo.Cart.clicked.connect(lambda: self.cart_click(pk, wc.value()))
         
 
-    def order_click(self, pk, count):
-        self.ucore.sendOrder(self.id,pk,count)    
+    def product_order_click(self, pk, count, name):
+        self.ucore.sendOrder(self.id,pk,count,name)    
 
     def cart_click(self, pk, count):
         for i in self.ui.ProductView.selectedIndexes():
             pk = self.product_model.item(i.row(),0).data(Qt.ItemDataRole.UserRole)
             price = self.product_model.item(i.row(),1).text()
             name = self.product_model.item(i.row(),0).text()
-            if len(self.ui.ProductView.selectedIndexes()) > 1 :
+            if len(self.ui.ProductView.selectedIndexes())//3 > 1 :
                 self.ucore.addCart(pk,name, price, 1)
             else :
                 self.ucore.addCart(pk,name, price, count)
            
     def pruduct_item_click(self, index:QModelIndex):
         if len(self.ui.ProductView.selectedIndexes())//3 > 1 :
-            self.set_order_side(None, None, None, None, True)
+            self.set_product_side(None, None, None, None, True)
         else:
             ppk = index.model().item(index.row(),0).data(Qt.ItemDataRole.UserRole)
             pname = index.model().item(index.row(),0).text()
             price = index.model().item(index.row(),1).text()
             des = index.model().item(index.row(),2).text()        
-            self.set_order_side(ppk, pname, price, des)
+            self.set_product_side(ppk, pname, price, des)
             self.selectedProductItem = index.row()
 
     def pruduct_item_selected(self, sel, dsel):
         if len(self.ui.ProductView.selectedIndexes())//3 > 1 : 
-            self.set_order_side(None, None, None, None, True)
+            self.set_product_side(None, None, None, None, True)
 
 
     def show_product_view(self):
@@ -150,7 +150,7 @@ class UserInterface:
         # 이건 전에 메인뷰에 장바구니 표시되던 방식 
         # self.cart_model = self.set_table(self.ui.CartView, ['품명', '가격', '수량'], self.ucore.getCartList(), self.cart_item_click, True, 0, 1)
         clearnView(self.ui.Side_Frame)
-        self.selectCartItem = None
+        self.selectedCartItem = None
         self.set_cart_side()
 
     def set_cart_side(self):
@@ -165,7 +165,7 @@ class UserInterface:
         self.uc.cart_sum.setText(str(self.ucore.getcartsum()))
         
     def cart_item_click(self, index:QModelIndex):
-        if len(self.ui.CartView.selectedIndexes())//3 > 1 :
+        if len(self.uc.CartView.selectedIndexes())//3 > 1 :
             self.selectedCartItem = None
             self.uc.selected_item_count.setValue(0)
         else:
@@ -200,68 +200,126 @@ class UserInterface:
             self.uc.itemcount.setText(str(self.ucore.getCartItemCount()))
             self.uc.cart_sum.setText(str(self.ucore.getcartsum()))
 
-    def cart_item_count_change(self,value):
-        pk = self.cart_model.item(self.selectedCartItem,0).data(Qt.ItemDataRole.UserRole)
-        self.cart_model.item(self.selectedCartItem,2).setText(str(value))
-        self.ucore.editCart(pk,value)      
-        self.uc.cart_sum.setText(str(self.ucore.getcartsum()))
-
     def cart_order(self):
         self.ucore.sendCartOrder(self.id)
         self.ucore.reset()
-        self.cart_model.clear()        
-        self.uc.itemcount.setText('0')
+        self.selectedCartItem = None
+        self.uc.selected_item_count.blockSignals(True)
         self.uc.selected_item_count.setValue(0)
+        self.uc.selected_item_count.blockSignals(False)
+        self.cart_model.removeRows(0, self.cart_model.rowCount())   
+        self.uc.itemcount.setText('0')
         self.uc.cart_sum.setText('0')
+
+    def cart_item_count_change(self, value):
+        if self.selectedCartItem is None:
+            return
+        item = self.cart_model.item(self.selectedCartItem, 0)
+        count_item = self.cart_model.item(self.selectedCartItem, 2)
+
+        if item is None:
+            self.selectedCartItem = None
+            return
+
+        pk = item.data(Qt.ItemDataRole.UserRole)
+        count_item.setText(str(value))
+        self.ucore.editCart(pk, value)
+        self.uc.cart_sum.setText(str(self.ucore.getcartsum()))
+
 
 ##################################################################################
 
+        
     def show_orderlist_view(self):
         self.ui.ProductView.hide()
         self.ui.CartView.hide()
         self.ui.OrderView.show()
         clearnView(self.ui.Side_Frame)
-        
+        self.selectedOrderItem = None
+        self.set_table_order_list()
 
-    def set_orderlist_side(self):
-        changeView(self.ui.Side_Frame, Ui_OrderListSide()).show()        
+    def set_table_order_list(self):
+        self.orderlist_model = self.set_table(
+            self.ui.OrderView,
+            ['주문명', '상태', '주문일', '완료일'],     
+            self.ucore.getOrderList(self.id),
+            self.orderlist_item_click,
+            True, 0, 1,
+            f_select = self.orderlist_item_selected)
 
+    def orderlist_selected_count(self):
+        # 장바구니의 //3 하드코딩 대신 모델 컬럼 수로 계산
+        if not self.orderlist_model:
+            return 0
+        return len(self.ui.OrderView.selectedIndexes()) // self.orderlist_model.columnCount()
 
+    def orderlist_item_click(self, index:QModelIndex):
+        if self.orderlist_selected_count() > 1:
+            self.selectedOrderItem = None
+            self.set_orderlist_side(None, True)
+        else:
+            self.selectedOrderItem = index.row()
+            order_id = self.orderlist_model.item(index.row(), 0).data(Qt.ItemDataRole.UserRole)
+            self.set_orderlist_side(order_id)              
 
+    def orderlist_item_selected(self, sel, dsel):
+        if self.orderlist_selected_count() > 1:
+            self.selectedOrderItem = None
+            self.set_orderlist_side(None, True)
 
+    def set_orderlist_side(self, order_id, mselected = False):     
+        self.ol = Ui_OrderListSide()
+        changeView(self.ui.Side_Frame, self.ol).show()
 
+        if mselected:
+            self.ol.label_2.hide()
+            self.ol.label_3.hide()
+            self.ol.label_8.hide()
+            self.ol.label_10.hide()
+            self.ol.label_11.hide()
+            self.ol.label_12.hide()
+            self.ol.label_13.hide()
+            self.ol.order_items.hide()
+        else:
+            self.ol.label_3.setText(str(order_id))
+            self.set_table_order_items(order_id)            
 
+        self.ol.order_cancle.clicked.connect(lambda: self.order_cancel_click())
 
+    def set_table_order_items(self, order_id):
+        items = self.ucore.getOrderItems(order_id)          
+        self.orderitem_model = self.set_table(
+            self.ol.order_items,
+            ['품명', '단가', '수량', '금액'],
+            items,
+            lambda index: None,
+            True, 0, 1,
+            single = True)
 
+        total = sum(int(i[4]) for i in items) if items else 0    
+        self.ol.label_13.setText(str(total))
 
+        if not self.orderitem_model:
+            return
+        self.ol.order_items.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.ol.order_items.verticalHeader().hide()
+        self.ol.order_items.resizeColumnsToContents()
 
-# 구 코드 혹시나 해서 일단 냅둠 
+    def order_cancel_click(self):
+        if self.orderlist_selected_count() > 1:
+            rows = list(set(i.row() for i in self.ui.OrderView.selectedIndexes()))
+            order_ids = list(set(self.orderlist_model.item(r, 0).data(Qt.ItemDataRole.UserRole)
+                                 for r in rows))
+            self.ucore.sendOrderMultipleCancel(order_ids)
+        elif self.selectedOrderItem is not None:
+            rows = [self.selectedOrderItem]
+            order_id = self.orderlist_model.item(self.selectedOrderItem, 0).data(Qt.ItemDataRole.UserRole)
+            self.ucore.sendOrderCancel(order_id)
+        else:
+            return
 
-    # def set_table_product_list(self):    
-            # results = User().getProductList()
-            # cullist = ['상품명','가격','설명']
-            # model =  QStandardItemModel(len(results), len(cullist))
-            # model.setHorizontalHeaderLabels(cullist)
-            
-            # self.tableview:QTableView = self.ui.ProductView
-            # self.tableview.setSelectionBehavior(QAbstractItemView.SelectRows)
-            # product_key = None;
-            # for i in range(len(results)):
-            #     for j in range(len(results[i])) :
-            #         if j == 0:
-            #             product_key = results[i][j]
-            #             continue
-            #         elif j== 1:
-            #             if not product_key:
-            #                 raise Exception('제품 pk 날라감')
-            #             result = str(results[i][j]) 
-            #             item = QStandardItem(result)
-            #             item.setData(product_key, Qt.ItemDataRole.UserRole)
-            #             model.setItem(i,j-1,item)
-            #             product_key = None;
-            #         else :
-            #             result = str(results[i][j])
-            #             item = QStandardItem(result)
-            #             model.setItem(i,j-1,QStandardItem(result))
-            # self.tableview.setModel(model)
-            # self.tableview.clicked.connect(self.pruduct_click)
+        for r in rows:                                    
+            self.orderlist_model.item(r, 1).setText('주문 취소')
+
+        self.selectedOrderItem = None
+        clearnView(self.ui.Side_Frame)

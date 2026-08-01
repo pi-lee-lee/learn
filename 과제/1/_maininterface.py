@@ -10,11 +10,14 @@ from core import *
 from util import *
 
 class MainInterface:
+
     def __init__(self):
         self.app = QApplication(sys.argv)
         self.MainWindow = QMainWindow()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.MainWindow)
+        self.id = None
+        self.uu = None
         self.ui.AdminFrame.hide()
         self.init_connect()
 
@@ -39,10 +42,13 @@ class MainInterface:
     def click_login(self):
         if self.ui.Login.text() == "로그인":
             self.show_login_dialog()
-        else :
+        else:
             self.ui.Info.show()
-            for i  in self.ui.MainFrame.findChildren(QFrame):
+            for i in self.ui.MainFrame.findChildren(QFrame):
                 i.setParent(None)
+            self.id = None
+            self.uu = None
+            self.ui.AdminFrame.hide()
             self.ui.Login.setText('로그인')
 
     def show_login_dialog(self):
@@ -50,20 +56,25 @@ class MainInterface:
         li.show_login(self.callback_login)
 
     def callback_login(self, id, code, upper_code):
-        self.id = id
-        if code == 'AA001':
-            print("관리자모드")
-            self.ui.AdminFrame.show()
-        elif upper_code == 'AU002':
-            print('사업자모드')
-        elif upper_code == 'AU003':
-            self.run_user_mode()
-            print('사용자모드')
 
+        if code == 'AUTH_ADMIN':
+            self.id = id
+            self.ui.AdminFrame.show()
+
+        if upper_code != 'AUTH':
+            return
+        elif code == 'AUTH_PARTNER':
+            self.id = id
+        elif code == 'AUTH_USER':
+            self.id = id
+            self.run_user_mode()
+        else:
+            return
         self.ui.Login.setText('로그아웃')
 
     def run_user_mode(self):
-        self.hideInfo()
-        self.uu = UserInterface(self.ui.MainFrame)
-        self.uu.id = self.id
-        self.uu.user_run()
+        if self.id:
+            self.hideInfo()
+            self.uu = UserInterface(self.ui.MainFrame)
+            self.uu.id = self.id
+            self.uu.user_run()

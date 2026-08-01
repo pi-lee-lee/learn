@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Frame</string>
   </property>
-  <widget class="QPushButton" name="pushButton_4">
+  <widget class="QPushButton" name="order_cancle">
    <property name="geometry">
     <rect>
      <x>180</x>
@@ -57,9 +57,6 @@
        <string/>
       </property>
      </widget>
-    </item>
-    <item row="1" column="0" colspan="4">
-     <widget class="QListView" name="listView"/>
     </item>
     <item row="0" column="1">
      <widget class="QLabel" name="label_8">
@@ -134,6 +131,9 @@
        </size>
       </property>
      </spacer>
+    </item>
+    <item row="1" column="0" colspan="4">
+     <widget class="QTableView" name="order_items"/>
     </item>
    </layout>
   </widget>
