@@ -1,6 +1,7 @@
 from core.login import Login
 from core.base import Base
 from core.user import User
+from core.biz import Biz
 
 
 
@@ -8,5 +9,6 @@ from core.user import User
 __all__ = [
     'User',
     'Login',
+    'Biz',
     'Base'
 ]

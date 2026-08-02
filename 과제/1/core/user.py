@@ -79,7 +79,7 @@ class User(Base):
     def getProductList(self) :
         try:
             con = self.dbm.get_connection()
-            return con.execute('select PID, NAME, PRICE, DES from Product').fetchall()
+            return con.execute("select PID, NAME, PRICE, DES from Product where STATE = 'PS002'").fetchall()
         except Exception as exp:
             raise exp
         finally:
@@ -89,7 +89,7 @@ class User(Base):
         try:
             con = self.dbm.get_connection()
             instr = ','.join([f"'{i}'" for i in pid])
-            query = f"select PID, NAME, PRICE from Product where PID in ({instr})"            
+            query = f"select PID, NAME, PRICE from Product where PID in ({instr}) and STATE = 'PS002'"            
             return con.execute(query).fetchall()
         except Exception as exp:
             raise exp

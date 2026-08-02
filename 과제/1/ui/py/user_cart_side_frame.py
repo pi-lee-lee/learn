@@ -62,6 +62,7 @@ class Ui_CartSide(object):
         self.gridLayout.addWidget(self.label_14, 2, 0, 1, 1)
         self.selected_item_count = QtWidgets.QSpinBox(self.gridLayoutWidget)
         self.selected_item_count.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.selected_item_count.setMaximum(999999999)
         self.selected_item_count.setObjectName("selected_item_count")
         self.gridLayout.addWidget(self.selected_item_count, 2, 2, 1, 1)
         self.CartView = QtWidgets.QTableView(self.gridLayoutWidget)

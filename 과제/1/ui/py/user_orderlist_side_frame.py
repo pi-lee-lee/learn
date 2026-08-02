@@ -36,10 +36,10 @@ class Ui_OrderListSide(object):
         self.label_3.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.label_3.setObjectName("label_3")
         self.gridLayout.addWidget(self.label_3, 0, 2, 1, 1)
-        self.label_13 = QtWidgets.QLabel(self.gridLayoutWidget)
-        self.label_13.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.label_13.setObjectName("label_13")
-        self.gridLayout.addWidget(self.label_13, 3, 2, 1, 1)
+        self.sum_price = QtWidgets.QLabel(self.gridLayoutWidget)
+        self.sum_price.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.sum_price.setObjectName("sum_price")
+        self.gridLayout.addWidget(self.sum_price, 3, 2, 1, 1)
         self.label_12 = QtWidgets.QLabel(self.gridLayoutWidget)
         self.label_12.setObjectName("label_12")
         self.gridLayout.addWidget(self.label_12, 3, 3, 1, 1)
@@ -61,6 +61,9 @@ class Ui_OrderListSide(object):
         self.gridLayout.addWidget(self.order_items, 1, 0, 1, 4)
         self.gridLayout.setColumnStretch(2, 1)
         self.gridLayout.setRowStretch(1, 1)
+        self.order_receipt = QtWidgets.QPushButton(OrderListSide)
+        self.order_receipt.setGeometry(QtCore.QRect(90, 400, 75, 23))
+        self.order_receipt.setObjectName("order_receipt")
 
         self.retranslateUi(OrderListSide)
         QtCore.QMetaObject.connectSlotsByName(OrderListSide)
@@ -71,11 +74,12 @@ class Ui_OrderListSide(object):
         self.order_cancle.setText(_translate("OrderListSide", "주문취소"))
         self.label_8.setText(_translate("OrderListSide", ":"))
         self.label_3.setText(_translate("OrderListSide", "123123123123123"))
-        self.label_13.setText(_translate("OrderListSide", "2000"))
+        self.sum_price.setText(_translate("OrderListSide", "2000"))
         self.label_12.setText(_translate("OrderListSide", "원"))
         self.label_2.setText(_translate("OrderListSide", "주문번호"))
         self.label_10.setText(_translate("OrderListSide", "총액"))
         self.label_11.setText(_translate("OrderListSide", ":"))
+        self.order_receipt.setText(_translate("OrderListSide", "주문접수"))
 
 
 if __name__ == "__main__":

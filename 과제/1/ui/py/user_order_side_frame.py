@@ -54,6 +54,7 @@ class Ui_OrderSide(object):
         self.gridLayout.addWidget(self.label_9, 1, 1, 1, 1)
         self.CountBox = QtWidgets.QSpinBox(self.gridLayoutWidget)
         self.CountBox.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.CountBox.setMaximum(999999999)
         self.CountBox.setObjectName("CountBox")
         self.gridLayout.addWidget(self.CountBox, 3, 2, 1, 1)
         self.label_2 = QtWidgets.QLabel(self.gridLayoutWidget)

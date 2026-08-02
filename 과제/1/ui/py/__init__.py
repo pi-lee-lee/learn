@@ -3,8 +3,10 @@ from .user_order_side_frame import Ui_OrderSide
 from .user_orderlist_side_frame import Ui_OrderListSide
 from .main_window import Ui_MainWindow
 from .login import Ui_Login
-from .com_frame import Ui_Office
 from .user_frame import Ui_User
+from .biz_frame import Ui_Biz
+from .biz_product_side_frame import Ui_ProductSide
+from .biz_parts_side_frame import Ui_PartsSide
 
 
 
@@ -15,6 +17,8 @@ __all__ = [
     'Ui_OrderListSide',
     'Ui_MainWindow',
     'Ui_Login',
-    'Ui_Office',
+    'Ui_Biz',
+    'Ui_ProductSide',
+    'Ui_PartsSide',
     'Ui_User'
 ]

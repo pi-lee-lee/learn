@@ -36,9 +36,9 @@ class Ui_MainWindow(object):
         self.AdminFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.AdminFrame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.AdminFrame.setObjectName("AdminFrame")
-        self.ComMode = QtWidgets.QPushButton(self.AdminFrame)
-        self.ComMode.setGeometry(QtCore.QRect(10, 5, 75, 23))
-        self.ComMode.setObjectName("ComMode")
+        self.BizMode = QtWidgets.QPushButton(self.AdminFrame)
+        self.BizMode.setGeometry(QtCore.QRect(10, 5, 75, 23))
+        self.BizMode.setObjectName("BizMode")
         self.UserMode = QtWidgets.QPushButton(self.AdminFrame)
         self.UserMode.setGeometry(QtCore.QRect(90, 5, 75, 23))
         self.UserMode.setObjectName("UserMode")
@@ -63,11 +63,20 @@ class Ui_MainWindow(object):
         self.Info.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Gulim\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">이프로그램은 .... 과제입니다. </p>\n"
+"</style></head><body style=\" font-family:\'.AppleSystemUIFont\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Gulim\'; font-size:24pt;\">이프로그램은 .... 과제입니다. </span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'Gulim\'; font-size:24pt;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Gulim\'; font-size:24pt;\">로그인해야 시작합니다. </span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'Gulim\'; font-size:24pt;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Gulim\'; font-size:24pt;\">id:admin, manager, user</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">로그인해야 시작합니다. </p></body></html>"))
-        self.ComMode.setText(_translate("MainWindow", "사업자모드"))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Gulim\'; font-size:24pt;\">비번은 1234  </span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Gulim\'; font-size:24pt;\">화면 나오는건 되고 감춰둔건 안됩니다. </span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Gulim\'; font-size:9pt;\">(쫌 들만들었는데 .... 여기까지만 합시다.) </span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Gulim\'; font-size:24pt;\">uic.sh, uic.ps1 파일은  ui-&gt;py 스크립트입니다. 바꿔놔야 .찍고 나와서 만들어둔겁니다. 이상한거 아닙니다.</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'Gulim\'; font-size:24pt;\"><br /></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'Gulim\'; font-size:24pt;\"><br /></p></body></html>"))
+        self.BizMode.setText(_translate("MainWindow", "사업자모드"))
         self.UserMode.setText(_translate("MainWindow", "사용자모드"))
 
 

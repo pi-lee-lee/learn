@@ -12,6 +12,7 @@ class UserInterface:
         self.ui = Ui_User()
         self.frame = frame
         self.id = ''
+        
     def user_run(self):
         self.set_user_frame()
         self.show_product_view()
@@ -26,8 +27,6 @@ class UserInterface:
         self.ui.ShowCart.clicked.connect(self.show_cart_view)
         self.ui.ShowOrder.clicked.connect(self.show_orderlist_view)
         f.show()
-
-
 
     def set_table(self, tableview, labels, items, f_click ,hidden = False, hitem = 0, hpos = 1 ,single = False , f_select = None):
         if not items or len(items) < 1 :
@@ -84,8 +83,28 @@ class UserInterface:
         return model
 
 #############################################################################
+    def show_product_view(self):
+        if not self.ui.ProductView.isVisible():
+            self.ui.ProductView.show()
+            self.ui.CartView.hide()
+            self.ui.OrderView.hide()
+            self.set_table_product_list()
+            clearnView(self.ui.Side_Frame)
+
     def set_table_product_list(self):
         self.product_model = self.set_table(self.ui.ProductView, ['상품명','가격','설명'], self.ucore.getProductList(), self.pruduct_item_click, True, 0, 1, f_select = self.pruduct_item_selected)
+
+    def pruduct_item_click(self, index:QModelIndex):
+        if len(self.ui.ProductView.selectedIndexes())//3 > 1 :
+            self.set_product_side(None, None, None, None, True)
+        else:
+            ppk = index.model().item(index.row(),0).data(Qt.ItemDataRole.UserRole)
+            pname = index.model().item(index.row(),0).text()
+            price = index.model().item(index.row(),1).text()
+            des = index.model().item(index.row(),2).text()        
+            self.set_product_side(ppk, pname, price, des)
+            self.selectedProductItem = index.row()
+
     def set_product_side(self, pk, name, price, des = None, mselected = False):
         pk = str(pk)
         self.uo = Ui_OrderSide()
@@ -125,30 +144,13 @@ class UserInterface:
                 self.ucore.addCart(pk,name, price, 1)
             else :
                 self.ucore.addCart(pk,name, price, count)
-           
-    def pruduct_item_click(self, index:QModelIndex):
-        if len(self.ui.ProductView.selectedIndexes())//3 > 1 :
-            self.set_product_side(None, None, None, None, True)
-        else:
-            ppk = index.model().item(index.row(),0).data(Qt.ItemDataRole.UserRole)
-            pname = index.model().item(index.row(),0).text()
-            price = index.model().item(index.row(),1).text()
-            des = index.model().item(index.row(),2).text()        
-            self.set_product_side(ppk, pname, price, des)
-            self.selectedProductItem = index.row()
 
     def pruduct_item_selected(self, sel, dsel):
         if len(self.ui.ProductView.selectedIndexes())//3 > 1 : 
             self.set_product_side(None, None, None, None, True)
 
 
-    def show_product_view(self):
-        if not self.ui.ProductView.isVisible():
-            self.ui.ProductView.show()
-            self.ui.CartView.hide()
-            self.ui.OrderView.hide()
-            self.set_table_product_list()
-            clearnView(self.ui.Side_Frame)
+
         
 ##################################################################################
     def show_cart_view(self):
@@ -275,9 +277,12 @@ class UserInterface:
             self.selectedOrderItem = None
             self.set_orderlist_side(None, None, True)
 
-    def set_orderlist_side(self, order_id, state, mselected = False):     
+    def set_orderlist_side(self, order_id, state, mselected = False):
         self.ol = Ui_OrderListSide()
         changeView(self.ui.Side_Frame, self.ol).show()
+
+        self.ol.order_receipt.hide()
+        cancel_off = None                      
 
         if mselected:
             self.ol.label_2.hide()
@@ -286,21 +291,33 @@ class UserInterface:
             self.ol.label_10.hide()
             self.ol.label_11.hide()
             self.ol.label_12.hide()
-            self.ol.label_13.hide()
+            self.ol.sum_price.hide()
             self.ol.order_items.hide()
+
+            rows = set(i.row() for i in self.ui.OrderView.selectedIndexes())
+
+            for i in rows:
+                if self.orderlist_model.item(i, 1).text() != '미접수':
+                    cancel_off = '취소불가'
+                    break;         
         else:
             self.ol.label_3.setText(str(order_id))
-            self.set_table_order_items(order_id)            
+            self.set_table_order_items(order_id)
+            if state == '주문 취소':
+                cancel_off = '취소됨'
+            elif state != '미접수':
+                cancel_off = '취소불가'
 
-        
-        if state == '주문 취소':
+
+        if cancel_off:
             self.ol.order_cancle.setEnabled(False)
-            self.ol.order_cancle.setText('취소됨')
+            self.ol.order_cancle.setText(cancel_off)
         else:
             self.ol.order_cancle.setEnabled(True)
             self.ol.order_cancle.setText('주문 취소')
-
-        self.ol.order_cancle.clicked.connect(lambda: self.order_cancel_click())
+            self.ol.order_cancle.clicked.connect(lambda: self.order_cancel_click())
+        
+        
 
     def set_table_order_items(self, order_id):
         items = self.ucore.getOrderItems(order_id)          
@@ -313,13 +330,13 @@ class UserInterface:
             single = True)
 
         total = sum(int(i[4]) for i in items) if items else 0    
-        self.ol.label_13.setText(str(total))
+        self.ol.sum_price.setText(str(total))
 
         if not self.orderitem_model:
             return
         self.ol.order_items.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.ol.order_items.verticalHeader().hide()
-        self.ol.order_items.resizeColumnsToContents()
+        # self.ol.order_items.verticalHeader().hide()
+        # self.ol.order_items.resizeColumnsToContents()
 
     def order_cancel_click(self):
         if self.orderlist_selected_count() > 1:

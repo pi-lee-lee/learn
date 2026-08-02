@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>OrderListSide</class>
- <widget class="QFrame" name="OrderListSide">
+ <class>PartsSide</class>
+ <widget class="QFrame" name="PartsSide">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>282</width>
+    <width>281</width>
     <height>441</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Frame</string>
   </property>
-  <widget class="QPushButton" name="order_cancle">
+  <widget class="QPushButton" name="button_edit">
    <property name="geometry">
     <rect>
-     <x>180</x>
+     <x>170</x>
      <y>400</y>
      <width>75</width>
      <height>23</height>
     </rect>
    </property>
    <property name="text">
-    <string>주문취소</string>
+    <string>수정</string>
    </property>
   </widget>
   <widget class="QWidget" name="gridLayoutWidget">
@@ -32,10 +32,10 @@
      <x>10</x>
      <y>20</y>
      <width>261</width>
-     <height>312</height>
+     <height>311</height>
     </rect>
    </property>
-   <layout class="QGridLayout" name="gridLayout" rowstretch="0,1,0,0" columnstretch="0,0,1,0">
+   <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0" columnstretch="0,0,0,0">
     <property name="leftMargin">
      <number>10</number>
     </property>
@@ -51,10 +51,41 @@
     <property name="spacing">
      <number>10</number>
     </property>
-    <item row="0" column="3">
-     <widget class="QLabel" name="label_7">
+    <item row="1" column="1">
+     <widget class="QLabel" name="label_9">
       <property name="text">
-       <string/>
+       <string>:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>부품명</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLabel" name="label_11">
+      <property name="text">
+       <string>:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="3">
+     <widget class="QLabel" name="label_6">
+      <property name="text">
+       <string>원</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="3">
+     <widget class="QLabel" name="label_12">
+      <property name="text">
+       <string>개</string>
       </property>
      </widget>
     </item>
@@ -66,60 +97,39 @@
      </widget>
     </item>
     <item row="0" column="2">
-     <widget class="QLabel" name="label_3">
+     <widget class="QLineEdit" name="part_name"/>
+    </item>
+    <item row="0" column="3">
+     <widget class="QLabel" name="label_7">
       <property name="text">
-       <string>123123123123123</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       <string/>
       </property>
      </widget>
     </item>
-    <item row="3" column="2">
-     <widget class="QLabel" name="sum_price">
-      <property name="text">
-       <string>2000</string>
-      </property>
+    <item row="1" column="2">
+     <widget class="QLineEdit" name="part_price"/>
+    </item>
+    <item row="2" column="2">
+     <widget class="QSpinBox" name="part_inventory_count">
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
-     </widget>
-    </item>
-    <item row="3" column="3">
-     <widget class="QLabel" name="label_12">
-      <property name="text">
-       <string>원</string>
+      <property name="maximum">
+       <number>999999999</number>
       </property>
      </widget>
     </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_2">
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_10">
       <property name="text">
-       <string>주문번호</string>
+       <string>제고</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
     <item row="3" column="0">
-     <widget class="QLabel" name="label_10">
-      <property name="text">
-       <string>총액</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QLabel" name="label_11">
-      <property name="text">
-       <string>:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="3">
      <spacer name="verticalSpacer">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -127,28 +137,22 @@
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
-        <height>20</height>
+        <height>40</height>
        </size>
       </property>
      </spacer>
     </item>
-    <item row="1" column="0" colspan="4">
-     <widget class="QTableView" name="order_items"/>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>가격</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
     </item>
    </layout>
-  </widget>
-  <widget class="QPushButton" name="order_receipt">
-   <property name="geometry">
-    <rect>
-     <x>90</x>
-     <y>400</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>주문접수</string>
-   </property>
   </widget>
  </widget>
  <resources/>
