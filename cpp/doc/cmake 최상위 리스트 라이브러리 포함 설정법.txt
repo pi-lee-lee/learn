@@ -1,0 +1,61 @@
+cmake_minimum_required(VERSION 3.10.0)
+project(EnterpriseSampleProject LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# -------------------------------------------------------------------
+# 1. 하위 서브 모듈 등록
+# -------------------------------------------------------------------
+# 하위 폴더의 CMakeLists.txt를 읽어 빌드 트리에 포함시킵니다.
+add_subdirectory(math_module)
+
+# -------------------------------------------------------------------
+# 2. 메인 실행 파일 및 외부 라이브러리 경로 설정
+# -------------------------------------------------------------------
+add_executable(my_program main.cpp)
+
+# 3rdparty 외부 라이브러리의 헤더 파일 경로를 메인에 연결합니다.
+target_include_directories(my_program PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/my_dll/include)
+
+# -------------------------------------------------------------------
+# 3. 코드 링크 자동화 (Linking)
+# -------------------------------------------------------------------
+# 자체 개발한 math_module과 외부 컴파일용 .lib 파일을 모두 결합합니다.
+target_link_libraries(my_program PRIVATE 
+    math_module
+    ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/my_dll/bin/my_library.lib
+)
+
+# -------------------------------------------------------------------
+# 4. Windows 전용: 빌드 후 실행용 .dll 파일을 .exe 폴더로 자동 복사
+# -------------------------------------------------------------------
+add_custom_command(TARGET my_program POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/my_dll/bin/my_library.dll"
+    "$<TARGET_FILE_DIR:my_program>"
+)
+
+
+
+# 💡 4-1. 컴퓨터 내부에서 OpenCV 라이브러리가 어디 있는지 자동으로 찾습니다.
+# REQUIRED 옵션은 라이브러리가 없으면 빌드를 즉시 중단하라는 뜻입니다.
+find_package(OpenCV REQUIRED)
+
+# 💡 4-2. 찾은 라이브러리의 헤더 경로와 바이너리를 내 프로그램에 결합합니다.
+# find_package가 성공하면 ${_FOUND}, ${_INCLUDE_DIRS}, ${_LIBS} 등의 변수가 자동 생성됩니다.
+target_include_directories(my_program PRIVATE ${OpenCV_INCLUDE_DIRS})
+target_link_libraries(my_program PRIVATE ${OpenCV_LIBS})
+
+
+
+
+# -------------------------------------------------------------------
+# 5. CTest 및 CPack 표준 템플릿 결합
+# -------------------------------------------------------------------
+include(CTest)
+enable_testing()
+
+set(CPACK_PROJECT_NAME ${PROJECT_NAME})
+set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+include(CPack)

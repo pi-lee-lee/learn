@@ -1,0 +1,5 @@
+# math_module 이라는 이름의 정적 라이브러리 정의
+add_library(math_module STATIC src/calculator.cpp)
+
+# 나를 가져다 쓰는 대상(main 등)에게도 내 헤더 경로를 자동으로 상속(PUBLIC)
+target_include_directories(math_module PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
