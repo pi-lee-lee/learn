@@ -1,0 +1,47 @@
+#include <iostream>
+#include <cstdlib>
+#include <memory>
+#include "./bank.h"
+
+using namespace std;
+
+
+int main(int argc, char* argv[]){
+
+
+    bank temp = bank::genbank();
+    
+    temp.user_conter(10,20);
+
+    temp.print();
+    return 0;
+}
+
+
+
+// #include <iostream>
+// using namespace std;
+
+// class bank2 {
+// private:
+//   int safe; //금고
+//   string bank_name;
+
+// public:
+//   bank2(string name) : bank_name(name) { safe = 0; };  //기본 생성자  
+//   ~bank2() {};
+//   void use_counter(int _in, int _out);  //입출금 창구 함수 
+// };
+
+// void bank2::use_counter(int _in, int _out) {
+//   safe += _in;
+//   safe -= _out;
+//   cout << bank_name << " 처리 - 입금: " << _in << ", 출금: " << _out << endl;
+// }
+
+// int main() {
+//   bank2 rich_bank("부유한 은행"), global_bank("세계적 은행");
+//   rich_bank.use_counter(10, 10);
+//   global_bank.use_counter(20, 5);
+//   return 0;
+// }

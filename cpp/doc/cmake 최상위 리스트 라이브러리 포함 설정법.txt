@@ -59,3 +59,19 @@ enable_testing()
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
+
+
+# 1. 최소 요구 CMake 버전 (컴퓨터에 깔린 버전보다 낮거나 같게 지정)
+cmake_minimum_required(VERSION 3.10)
+
+# 2. 프로젝트 이름 및 언어 설정
+project(MyBankProject VERSION 1.0 LANGUAGES CXX)
+
+# 3. 만들고 싶은 실행 파일 이름과 소스 파일 연결 (최종 출력: MyBank.exe)
+add_executable(MyBank main.cpp bank.cpp)
+
+# 4. 헤더 파일 폴더 위치 알려주기 (-I 옵션 역할)
+target_include_directories(MyBank PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+
+# 5. 외부 라이브러리 연결하기 (-l 옵션 역할)
+target_link_libraries(MyBank PRIVATE mariadb pthread)
