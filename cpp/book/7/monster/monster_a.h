@@ -9,9 +9,9 @@ class monster_a : monster, character{
     public:
         monster_a(){};
         ~monster_a(){};
-        void get_damage(int _damage) override;
-        void attack(player target_player)override;
-        void attack_special(player target_player)override;
+        virtual void get_damage(int _damage) override;
+        virtual void attack(player target_player)override;
+        virtual void attack_special(player target_player)override;
 };
 
 

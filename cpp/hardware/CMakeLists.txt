@@ -1,0 +1,33 @@
+cmake_minimum_required(VERSION 3.30)
+
+project(app LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+
+# cpp 소스 파일 검색
+file(GLOB CPP_FILES
+    CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*/*/*.cpp"
+)
+
+
+# 헤더 파일 검색
+file(GLOB HEADER_FILES
+    CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*/*/*.h"
+)
+
+
+add_executable(app
+    ${CPP_FILES}
+    ${HEADER_FILES}
+)
