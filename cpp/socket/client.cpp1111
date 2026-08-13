@@ -20,7 +20,7 @@ int main() {
     int targetPort = 9000;
     
     // 포맷 변경 반영: 끝에 콤마(,)를 붙여 아두이노가 즉시 인식하도록 합니다.
-    std::string payload = "pin:13,"; 
+    std::string payload = "pin:13,pin:13,"; 
 
     // 2. 단일 소켓 생성 (연결 유지를 위해 루프 밖에서 생성)
     SOCKET clientSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -70,7 +70,7 @@ int main() {
         }
 
         // 아두이노 스트림 처리 마진을 위한 최소한의 간격 (0.5초)
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     std::cout << "=== 송신 완료 및 소켓 종료 ===" << std::endl;
