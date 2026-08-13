@@ -28,3 +28,7 @@ add_executable(app
     ${CPP_FILES}
     ${HEADER_FILES}
 )
+
+if(WIN32)
+    target_link_libraries(app PRIVATE ws2_32)
+endif()

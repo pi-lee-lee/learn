@@ -1,0 +1,30 @@
+<html>
+<head>
+    <title>ESP8266 LED Control</title>
+</head>
+<body>
+    <button id="13" class="led">Pin 13</button> 
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".led").click(function(){
+            var p = $(this).attr('id'); 
+            
+           
+            fetch("http://192.168.0.214:80?pin="+p, {
+                method: "GET",
+                mode: "no-cors",       
+                credentials: "omit",  
+                cache: "no-store"      
+            }).catch(function(err) {
+                
+               
+                console.log("skdk");
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

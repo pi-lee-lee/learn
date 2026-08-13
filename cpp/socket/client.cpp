@@ -1,0 +1,82 @@
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#include <iostream>
+#include <string>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <chrono>
+#include <thread>
+
+#pragma comment(lib, "ws2_32.lib")
+
+int main() {
+    // 1. 윈속 초기화
+    WSADATA wsaData;
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
+        std::cerr << "WSAStartup 실패." << std::endl;
+        return 1;
+    }
+
+    std::string targetIP = "192.168.0.214";
+    int targetPort = 9000;
+    
+    // 포맷 변경 반영: 끝에 콤마(,)를 붙여 아두이노가 즉시 인식하도록 합니다.
+    std::string payload = "pin:13,"; 
+
+    // 2. 단일 소켓 생성 (연결 유지를 위해 루프 밖에서 생성)
+    SOCKET clientSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (clientSocket == INVALID_SOCKET) {
+        std::cerr << "소켓 생성 실패. 에러 코드: " << WSAGetLastError() << std::endl;
+        WSACleanup();
+        return 1;
+    }
+
+    // 3. 서버 주소 설정
+    sockaddr_in serverAddr;
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_port = htons(targetPort);
+    serverAddr.sin_addr.s_addr = inet_addr(targetIP.c_str());
+
+    if (serverAddr.sin_addr.s_addr == INADDR_NONE) {
+        std::cerr << "잘못된 IP 주소입니다." << std::endl;
+        closesocket(clientSocket);
+        WSACleanup();
+        return 1;
+    }
+
+    // 4. 최초 1회 서버 연결 (지속적 소켓 세션 오픈)
+    std::cout << "서버(" << targetIP << ":" << targetPort << ") 연결 시도..." << std::endl;
+    if (connect(clientSocket, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
+        std::cerr << "서버 연결 실패. 에러 코드: " << WSAGetLastError() << std::endl;
+        closesocket(clientSocket);
+        WSACleanup();
+        return 1;
+    }
+    std::cout << "TCP 소켓 연결 성공! 데이터 스트림 송신을 시작합니다." << std::endl;
+
+    std::cout << "=== 10회 연속 송신을 시작합니다 ===" << std::endl;
+
+    // 5. 하나의 소켓 통로가 열린 상태에서 데이터만 계속 주입
+    for (int i = 1; i <= 10; ++i) {
+        std::cout << "[" << i << "/10] 데이터 스트림 송신... ";
+        
+        // 서버의 응답(recv)을 기다리는 블로킹 코드 제거 (오직 전송만 수행)
+        int bytesSent = send(clientSocket, payload.c_str(), payload.length(), 0);
+        
+        if (bytesSent == SOCKET_ERROR) {
+            std::cout << "실패 (에러 코드: " << WSAGetLastError() << ")" << std::endl;
+            break; // 연결이 끊겼다면 루프 탈출
+        } else {
+            std::cout << "성공" << std::endl;
+        }
+
+        // 아두이노 스트림 처리 마진을 위한 최소한의 간격 (0.5초)
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    }
+
+    std::cout << "=== 송신 완료 및 소켓 종료 ===" << std::endl;
+
+    // 6. 모든 작업이 끝난 후 소켓 자원 반환
+    closesocket(clientSocket);
+    WSACleanup();
+    return 0;
+}

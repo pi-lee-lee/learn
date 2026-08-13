@@ -89,6 +89,8 @@ unsigned int n_mux_4_way32(unsigned int sel, unsigned int a, unsigned int b, uns
     unsigned int is_c = n_not(sel ^ 0x00000002);
     unsigned int is_d = n_not(sel ^ 0x00000003);
 
+     
+
     
 }
 
