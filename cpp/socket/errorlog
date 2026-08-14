@@ -1,0 +1,8 @@
+C:\Windows\system32\cmd.exe /C "cd . && C:\msys64\ucrt64\bin\clang++.exe -g  CMakeFiles/app.dir/server_copy.cpp.obj CMakeFiles/app.dir/server.cpp.obj -o app.exe -Wl,--out-implib,libapp.dll.a -Wl,--major-image-version,0,--minor-image-version,0  -lws2_32  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 && cd ."
+C:/msys64/ucrt64/bin/ld: CMakeFiles/app.dir/server.cpp.obj: in function `__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >::operator*() const':
+D:/learn/cpp/socket/server.cpp:550: multiple definition of `main'; CMakeFiles/app.dir/server_copy.cpp.obj:D:/learn/cpp/socket/server copy.cpp:952: first defined here
+clang++: error: linker command failed with exit code 1 (use -v to see invocation)
+ninja: build stopped: subcommand failed.
+
+ *  The terminal process "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -Command cmake --build build" terminated with exit code: 1. 
+ *  Terminal will be reused by tasks, press any key to close it. 
